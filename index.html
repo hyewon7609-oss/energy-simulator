@@ -1,201 +1,534 @@
 <!DOCTYPE html>
 <html lang="ko">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>우리 집 종합 에너지 다이어리</title>
-    <style>
-        :root { --primary: #3498db; --success: #27ae60; --warning: #f1c40f; --danger: #e74c3c; --bg: #f4f7f6; --dark: #2c3e50; }
-        body { font-family: -apple-system, BlinkMacSystemFont, "Apple SD Gothic Neo", sans-serif; background-color: var(--bg); margin: 0; padding: 0; color: var(--dark); }
-        
-        /* 미리보기 경고창 디자인 */
-        #safari-warning { background-color: #ffeaa7; color: #d35400; padding: 20px; text-align: center; font-weight: bold; font-size: 16px; border-bottom: 3px solid #f39c12; margin-bottom: 20px; line-height: 1.6; }
-        
-        /* 상단 고정 영역 (제목 + 영수증 합침) */
-        .sticky-header { position: sticky; top: 0; background: white; z-index: 1000; padding: 15px 20px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); border-bottom-left-radius: 20px; border-bottom-right-radius: 20px; }
-        .header-title { text-align: center; margin-bottom: 15px; }
-        .header-title h1 { margin: 0; font-size: 20px; color: var(--dark); }
-        .header-title p { margin: 5px 0 0 0; font-size: 12px; color: #7f8c8d; }
-        
-        /* 대시보드 디자인 */
-        .dash-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; max-width: 600px; margin: 0 auto; }
-        .dash-box { padding: 10px; border-radius: 12px; text-align: center; }
-        .box-cost { background: #ebf5fb; color: #2980b9; }
-        .box-eco { background: #e8f8f5; color: #16a085; }
-        .box-save { grid-column: span 2; background: #fef9e7; color: #d35400; border: 2px dashed #f39c12; }
-        
-        .dash-title { font-size: 12px; font-weight: bold; opacity: 0.8; margin-bottom: 4px; }
-        .dash-val { font-size: 18px; font-weight: 900; }
-        .dash-sub { font-size: 11px; margin-top: 4px; opacity: 0.7; }
 
-        /* 기기 목록 영역 */
-        .device-list { padding: 20px 15px 40px 15px; display: grid; gap: 15px; max-width: 600px; margin: 0 auto; }
-        .card { background: white; border-radius: 16px; padding: 15px; box-shadow: 0 4px 6px rgba(0,0,0,0.05); }
-        .card-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; border-bottom: 1px solid #eee; padding-bottom: 10px; }
-        .device-name { font-weight: bold; font-size: 16px; display: flex; align-items: center; gap: 8px; }
-        .device-specs { font-size: 12px; color: #7f8c8d; background: #f8f9fa; padding: 4px 8px; border-radius: 8px; }
-        
-        .control-row { margin-bottom: 15px; }
-        .control-label { display: flex; justify-content: space-between; font-size: 13px; font-weight: bold; margin-bottom: 8px; color: #34495e; }
-        input[type=range] { width: 100%; height: 6px; border-radius: 5px; background: #dfe6e9; appearance: none; outline: none; }
-        input[type=range]::-webkit-slider-thumb { appearance: none; width: 22px; height: 22px; background: var(--primary); border-radius: 50%; cursor: pointer; border: 2px solid white; box-shadow: 0 2px 5px rgba(0,0,0,0.2); }
-        
-        .toggle-row { display: flex; justify-content: space-between; align-items: center; background: #fff3e0; padding: 10px 12px; border-radius: 10px; border: 1px solid #ffe0b2; }
-        .toggle-text { font-size: 13px; font-weight: bold; color: #d35400; }
-        
-        /* 토글 스위치 디자인 */
-        .switch { position: relative; display: inline-block; width: 46px; height: 24px; flex-shrink: 0; }
-        .switch input { opacity: 0; width: 0; height: 0; }
-        .slider-round { position: absolute; cursor: pointer; top: 0; left: 0; right: 0; bottom: 0; background-color: #e74c3c; transition: .4s; border-radius: 34px; }
-        .slider-round:before { position: absolute; content: ""; height: 18px; width: 18px; left: 3px; bottom: 3px; background-color: white; transition: .4s; border-radius: 50%; }
-        input:checked + .slider-round { background-color: var(--success); }
-        input:checked + .slider-round:before { transform: translateX(22px); }
+<head>
+
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>식물 광합성 센서 측정 실험</title>
+
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+    <style>
+
+        body {
+            font-family: 'Malgun Gothic', sans-serif;
+            margin: 20px;
+            background-color: #f4f7f6;
+        }
+
+        h1, h2 {
+            color: #1e3d2f;
+            text-align: center;
+        }
+
+        .container {
+            max-width: 1100px;
+            margin: 0 auto;
+            display: flex;
+            flex-direction: column;
+            gap: 25px;
+        }
+
+        .table-section,
+        .chart-section,
+        .student-box {
+
+            background: white;
+            padding: 25px;
+            border-radius: 12px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+        }
+
+        .chart-section {
+            display: flex;
+            gap: 20px;
+            flex-wrap: wrap;
+        }
+
+        .chart-container {
+            flex: 1;
+            min-width: 300px;
+            min-height: 380px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 15px;
+        }
+
+        th, td {
+            border: 1px solid #e0e0e0;
+            padding: 12px;
+            text-align: center;
+            font-size: 15px;
+        }
+
+        th {
+            background-color: #2e7d32;
+            color: white;
+        }
+
+        tr:nth-child(even) {
+            background-color: #f9f9f9;
+        }
+
+        input[type="number"],
+        input[type="text"] {
+
+            width: 90%;
+            padding: 8px;
+            text-align: center;
+            border: 1px solid #cccccc;
+            border-radius: 6px;
+            font-size: 14px;
+        }
+
+        .button-wrap {
+            display: flex;
+            justify-content: center;
+            gap: 12px;
+            flex-wrap: wrap;
+            margin-top: 20px;
+        }
+
+        button {
+
+            padding: 12px 18px;
+            background-color: #2e7d32;
+            color: white;
+            border: none;
+            border-radius: 6px;
+            font-size: 15px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background-color: #1b5e20;
+        }
+
+        @media (max-width: 768px) {
+
+            .chart-section {
+                flex-direction: column;
+            }
+        }
+
     </style>
+
 </head>
+
 <body>
 
-    <div id="safari-warning">
-        🚨 앗! 지금은 <b>'미리보기'</b> 모드라서 조작할 수 없어요.<br>
-        오른쪽 위(또는 아래)의 <b>[공유 ⬆️]</b> 버튼을 누르고<br>
-        🧭 <b>[Safari에서 열기]</b>를 선택해주세요!
-    </div>
+    <h1>🌱 식물의 광합성 반응 측정 실험</h1>
+    <h2>[시간 경과에 따른 기체 농도 변화 확인하기]</h2>
 
-    <div class="sticky-header">
-        <div class="header-title">
-            <h1>📊 우리 집 전기 영수증</h1>
-            <p>기기를 조작하면 아래 요금이 실시간으로 변합니다!</p>
-        </div>
-        <div class="dash-grid">
-            <div class="dash-box box-cost">
-                <div class="dash-title">💰 한 달 총 요금</div>
-                <div class="dash-val" id="totalCost">0원</div>
-                <div class="dash-sub" id="totalKwh">0 kWh</div>
-            </div>
-            <div class="dash-box box-eco">
-                <div class="dash-title">🌲 필요 소나무 (월)</div>
-                <div class="dash-val" id="totalTrees">0그루</div>
-                <div class="dash-sub" id="totalCo2">0 kg (CO₂)</div>
-            </div>
-            <div class="dash-box box-save">
-                <div class="dash-title">✨ 대기전력 차단으로 아낀 연간 금액 ✨</div>
-                <div class="dash-val" id="yearlySave">0원</div>
-            </div>
-        </div>
-    </div>
+    <div class="container">
 
-    <div class="device-list" id="deviceList">
+        <div class="student-box">
+
+            <h3>👩‍🔬 학생 정보 입력</h3>
+
+            <table>
+                <tr>
+
+                    <th>모둠명</th>
+
+                    <td>
+                        <input type="text"
+                               id="groupName"
+                               placeholder="예: 1모둠">
+                    </td>
+
+                    <th>이름</th>
+
+                    <td>
+                        <input type="text"
+                               id="studentName"
+                               placeholder="예: 홍길동">
+                    </td>
+
+                </tr>
+            </table>
+
         </div>
+
+        <div class="table-section">
+
+            <h3>📊 1분 단위 실험 데이터 입력</h3>
+
+            <table>
+
+                <thead>
+
+                    <tr>
+
+                        <th>시간 (분)</th>
+
+                        <th>
+                            산소 농도 (%)<br>
+                            <span style="font-size:11px;">
+                                (0.1%씩 입력)
+                            </span>
+                        </th>
+
+                        <th>
+                            이산화탄소 농도 (ppm)<br>
+                            <span style="font-size:11px;">
+                                (1000 이상 입력 가능)
+                            </span>
+                        </th>
+
+                    </tr>
+
+                </thead>
+
+                <tbody id="input-rows"></tbody>
+
+            </table>
+
+            <div class="button-wrap">
+
+                <button onclick="drawGraphs()">
+                    📊 그래프 확인하기
+                </button>
+
+                <button onclick="downloadGraphs()">
+                    💾 그래프 저장하기
+                </button>
+
+                <button onclick="submitData()">
+                    📤 결과 제출하기
+                </button>
+
+            </div>
+
+        </div>
+
+        <div class="chart-section">
+
+            <div class="chart-container">
+                <canvas id="o2Chart"></canvas>
+            </div>
+
+            <div class="chart-container">
+                <canvas id="co2Chart"></canvas>
+            </div>
+
+        </div>
+
+    </div>
 
 <script>
-    // 자바스크립트가 정상적으로 작동하면 경고창을 숨깁니다!
-    document.getElementById('safari-warning').style.display = 'none';
 
-    const devices = [
-        { id: 'settop', name: '인터넷 셋톱박스', icon: '📡', power: 15, standby: 10, hours: 4, off: false },
-        { id: 'tv', name: '거실 대형 TV', icon: '📺', power: 150, standby: 1, hours: 4, off: false },
-        { id: 'ac', name: '거실 에어컨', icon: '❄️', power: 1500, standby: 3, hours: 3, off: false },
-        { id: 'rice', name: '전기밥솥 (보온)', icon: '🍚', power: 1000, standby: 3, hours: 2, off: false },
-        { id: 'micro', name: '전자레인지', icon: '🔥', power: 1200, standby: 2, hours: 0.5, off: false },
-        { id: 'pc', name: '데스크탑 PC', icon: '💻', power: 100, standby: 2, hours: 3, off: false },
-        { id: 'bidet', name: '욕실 비데', icon: '🚽', power: 800, standby: 3, hours: 1, off: false },
-        { id: 'charger', name: '휴대폰 충전기', icon: '📱', power: 10, standby: 0.5, hours: 4, off: false },
-        { id: 'washer', name: '드럼 세탁기', icon: '🧺', power: 500, standby: 2, hours: 1, off: false },
-        { id: 'purifier', name: '공기청정기', icon: '🍃', power: 40, standby: 1, hours: 10, off: false }
+const SCRIPT_URL =
+"https://script.google.com/macros/s/AKfycbw8VCFLh8Ddgj_18Rj7Vw1mws9yo8MigJ3ioURBFWap0M4yWjULtIyzvVp0LlmqhF6m/exec";
+
+const tbody =
+document.getElementById('input-rows');
+
+const sampleData = [
+
+    { o2: 20.90, co2: 1200 },
+    { o2: 21.00, co2: 1050 },
+    { o2: 21.10, co2: 910 },
+    { o2: 21.20, co2: 780 },
+    { o2: 21.30, co2: 640 },
+    { o2: 21.40, co2: 510 }
+
+];
+
+for (let i = 0; i <= 5; i++) {
+
+    const tr =
+    document.createElement('tr');
+
+    tr.innerHTML = `
+
+        <td><b>${i}분</b></td>
+
+        <td>
+            <input
+                type="number"
+                step="0.01"
+                class="o2-input"
+                placeholder="${sampleData[i].o2}">
+        </td>
+
+        <td>
+            <input
+                type="number"
+                step="1"
+                class="co2-input"
+                placeholder="${sampleData[i].co2}">
+        </td>
+    `;
+
+    tbody.appendChild(tr);
+}
+
+let o2ChartInstance = null;
+let co2ChartInstance = null;
+
+function drawGraphs() {
+
+    const timeLabels = [
+
+        '0분',
+        '1분',
+        '2분',
+        '3분',
+        '4분',
+        '5분'
     ];
 
-    const deviceListDiv = document.getElementById('deviceList');
+    const o2Values = Array.from(
+        document.querySelectorAll('.o2-input')
+    ).map(el => parseFloat(el.value));
 
-    function renderDevices() {
-        deviceListDiv.innerHTML = '';
-        devices.forEach((dev, index) => {
-            const card = document.createElement('div');
-            card.className = 'card';
-            card.innerHTML = `
-                <div class="card-header">
-                    <div class="device-name"><span>${dev.icon}</span> ${dev.name}</div>
-                    <div class="device-specs">작동 ${dev.power}W | 대기 ${dev.standby}W</div>
-                </div>
-                <div class="control-row">
-                    <div class="control-label">
-                        <span>하루 사용 시간</span>
-                        <span id="label_h_${index}" style="color:var(--primary);">${dev.hours}시간</span>
-                    </div>
-                    <input type="range" min="0" max="24" step="0.5" value="${dev.hours}" 
-                           oninput="updateHours(${index}, this.value)">
-                </div>
-                <div class="toggle-row" id="bg_t_${index}">
-                    <div class="toggle-text" id="text_t_${index}">콘센트에 플러그 꽂혀있음</div>
-                    <label class="switch">
-                        <input type="checkbox" onchange="toggleStandby(${index}, this.checked)" ${dev.off ? 'checked' : ''}>
-                        <span class="slider-round"></span>
-                    </label>
-                </div>
-            `;
-            deviceListDiv.appendChild(card);
-            updateToggleUI(index, dev.off);
-        });
-        calculateTotal();
+    const co2Values = Array.from(
+        document.querySelectorAll('.co2-input')
+    ).map(el => parseFloat(el.value));
+
+    if (
+        o2Values.includes(NaN) ||
+        co2Values.includes(NaN)
+    ) {
+
+        alert("모든 값을 입력하세요!");
+        return;
     }
 
-    function updateHours(index, val) {
-        devices[index].hours = parseFloat(val);
-        document.getElementById('label_h_' + index).innerText = val + "시간";
-        calculateTotal();
-    }
+    // 산소 그래프
 
-    function toggleStandby(index, isChecked) {
-        devices[index].off = isChecked;
-        updateToggleUI(index, isChecked);
-        calculateTotal();
-    }
+    if (o2ChartInstance)
+        o2ChartInstance.destroy();
 
-    function updateToggleUI(index, isChecked) {
-        const bg = document.getElementById('bg_t_' + index);
-        const text = document.getElementById('text_t_' + index);
-        if(isChecked) {
-            bg.style.background = '#e8f8f5';
-            bg.style.borderColor = '#a3e4d7';
-            text.innerText = '플러그 뽑음 (차단 완료!)';
-            text.style.color = '#16a085';
-        } else {
-            bg.style.background = '#fff3e0';
-            bg.style.borderColor = '#ffe0b2';
-            text.innerText = '콘센트에 꽂혀있음 (새는중)';
-            text.style.color = '#d35400';
-        }
-    }
+    const ctxO2 =
+    document.getElementById('o2Chart')
+    .getContext('2d');
 
-    function calculateTotal() {
-        let totalKwh = 0;
-        let totalSavedKwhPerMonth = 0;
+    o2ChartInstance = new Chart(ctxO2, {
 
-        devices.forEach(dev => {
-            const activeWh = dev.power * dev.hours;
-            const idleHours = 24 - dev.hours;
-            const standbyWh = dev.off ? 0 : (dev.standby * idleHours);
-            
-            const deviceMonthlyKwh = ((activeWh + standbyWh) * 30) / 1000;
-            totalKwh += deviceMonthlyKwh;
+        type: 'line',
 
-            if(dev.off) {
-                totalSavedKwhPerMonth += ((dev.standby * idleHours) * 30) / 1000;
+        data: {
+
+            labels: timeLabels,
+
+            datasets: [{
+
+                label: '산소 농도 (%)',
+
+                data: o2Values,
+
+                borderColor: '#e74c3c',
+
+                backgroundColor:
+                'rgba(231,76,60,0.1)',
+
+                borderWidth: 4,
+
+                pointRadius: 5,
+
+                tension: 0.2
+            }]
+        },
+
+        options: {
+
+            responsive: true,
+
+            plugins: {
+
+                title: {
+
+                    display: true,
+
+                    text:
+                    '📈 시간에 따른 산소(O₂) 농도 증가'
+                }
             }
-        });
+        }
+    });
 
-        const cost = Math.round(totalKwh * 200);
-        const co2 = totalKwh * 0.45;
-        const trees = co2 / 0.55;
-        const yearlySave = Math.round(totalSavedKwhPerMonth * 200) * 12;
+    // 이산화탄소 그래프
 
-        document.getElementById('totalCost').innerText = cost.toLocaleString() + "원";
-        document.getElementById('totalKwh').innerText = totalKwh.toFixed(1) + " kWh";
-        document.getElementById('totalCo2').innerText = co2.toFixed(1) + " kg";
-        document.getElementById('totalTrees').innerText = trees.toFixed(1) + "그루";
-        document.getElementById('yearlySave').innerText = yearlySave > 0 ? yearlySave.toLocaleString() + "원 절약 중!" : "0원";
+    if (co2ChartInstance)
+        co2ChartInstance.destroy();
+
+    const ctxCo2 =
+    document.getElementById('co2Chart')
+    .getContext('2d');
+
+    co2ChartInstance = new Chart(ctxCo2, {
+
+        type: 'line',
+
+        data: {
+
+            labels: timeLabels,
+
+            datasets: [{
+
+                label:
+                '이산화탄소 농도 (ppm)',
+
+                data: co2Values,
+
+                borderColor: '#2980b9',
+
+                backgroundColor:
+                'rgba(41,128,185,0.1)',
+
+                borderWidth: 4,
+
+                pointRadius: 5,
+
+                tension: 0.2
+            }]
+        },
+
+        options: {
+
+            responsive: true,
+
+            plugins: {
+
+                title: {
+
+                    display: true,
+
+                    text:
+                    '📉 시간에 따른 이산화탄소(CO₂) 농도 감소'
+                }
+            }
+        }
+    });
+}
+
+function downloadGraphs() {
+
+    const groupName =
+    document.getElementById('groupName').value
+    || '모둠';
+
+    const studentName =
+    document.getElementById('studentName').value
+    || '학생';
+
+    const canvas1 =
+    document.getElementById('o2Chart');
+
+    const canvas2 =
+    document.getElementById('co2Chart');
+
+    const mergedCanvas =
+    document.createElement('canvas');
+
+    const ctx =
+    mergedCanvas.getContext('2d');
+
+    mergedCanvas.width =
+    canvas1.width + canvas2.width + 60;
+
+    mergedCanvas.height =
+    Math.max(
+        canvas1.height,
+        canvas2.height
+    ) + 80;
+
+    ctx.fillStyle = "white";
+
+    ctx.fillRect(
+        0,
+        0,
+        mergedCanvas.width,
+        mergedCanvas.height
+    );
+
+    ctx.fillStyle = "black";
+
+    ctx.font = "24px Malgun Gothic";
+
+    ctx.fillText(
+        `${groupName} - ${studentName} 광합성 실험 결과`,
+        30,
+        40
+    );
+
+    ctx.drawImage(canvas1, 20, 60);
+
+    ctx.drawImage(
+        canvas2,
+        canvas1.width + 40,
+        60
+    );
+
+    const link =
+    document.createElement('a');
+
+    link.download =
+    `${groupName}_${studentName}_광합성그래프.png`;
+
+    link.href =
+    mergedCanvas.toDataURL('image/png');
+
+    link.click();
+}
+
+async function submitData() {
+
+    const group =
+    document.getElementById('groupName').value;
+
+    const name =
+    document.getElementById('studentName').value;
+
+    const o2Values = Array.from(
+        document.querySelectorAll('.o2-input')
+    ).map(el => parseFloat(el.value));
+
+    const co2Values = Array.from(
+        document.querySelectorAll('.co2-input')
+    ).map(el => parseFloat(el.value));
+
+    if (!group || !name) {
+
+        alert("모둠명과 이름 입력!");
+        return;
     }
 
-    renderDevices();
-</script>
+    const data = {
 
+        group: group,
+        name: name,
+        o2: o2Values,
+        co2: co2Values
+    };
+
+    try {
+
+        await fetch(SCRIPT_URL, {
+
+            method: "POST",
+
+            body: JSON.stringify(data)
+        });
+
+        alert("제출 완료되었습니다! ✅");
+
+    } catch(error) {
+
+        alert("제출 실패 😥");
+
+        console.error(error);
+    }
+}
+
+</script>
 </body>
 </html>
