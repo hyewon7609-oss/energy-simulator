@@ -3,532 +3,453 @@
 
 <head>
 
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    <title>식물 광합성 센서 측정 실험</title>
+<title>광합성 실험 데이터 수집</title>
 
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
-    <style>
+<style>
 
-        body {
-            font-family: 'Malgun Gothic', sans-serif;
-            margin: 20px;
-            background-color: #f4f7f6;
-        }
+body{
+    font-family:'Malgun Gothic',sans-serif;
+    margin:20px;
+    background:#f4f7f6;
+}
 
-        h1, h2 {
-            color: #1e3d2f;
-            text-align: center;
-        }
+h1,h2{
+    text-align:center;
+    color:#1e3d2f;
+}
 
-        .container {
-            max-width: 1100px;
-            margin: 0 auto;
-            display: flex;
-            flex-direction: column;
-            gap: 25px;
-        }
+.container{
+    max-width:1200px;
+    margin:auto;
+}
 
-        .table-section,
-        .chart-section,
-        .student-box {
+.card{
+    background:white;
+    padding:20px;
+    border-radius:10px;
+    box-shadow:0 4px 6px rgba(0,0,0,0.1);
+    margin-bottom:20px;
+}
 
-            background: white;
-            padding: 25px;
-            border-radius: 12px;
-            box-shadow: 0 4px 6px rgba(0,0,0,0.05);
-        }
+table{
+    width:100%;
+    border-collapse:collapse;
+}
 
-        .chart-section {
-            display: flex;
-            gap: 20px;
-            flex-wrap: wrap;
-        }
+th,td{
+    border:1px solid #ddd;
+    padding:10px;
+    text-align:center;
+}
 
-        .chart-container {
-            flex: 1;
-            min-width: 300px;
-            min-height: 380px;
-        }
+th{
+    background:#2e7d32;
+    color:white;
+}
 
-        table {
-            width: 100%;
-            border-collapse: collapse;
-            margin-top: 15px;
-        }
+input,
+select{
 
-        th, td {
-            border: 1px solid #e0e0e0;
-            padding: 12px;
-            text-align: center;
-            font-size: 15px;
-        }
+    width:90%;
+    padding:8px;
+    border:1px solid #ccc;
+    border-radius:5px;
+    text-align:center;
+    font-size:14px;
+}
 
-        th {
-            background-color: #2e7d32;
-            color: white;
-        }
+.button-wrap{
 
-        tr:nth-child(even) {
-            background-color: #f9f9f9;
-        }
+    margin-top:20px;
+    text-align:center;
+}
 
-        input[type="number"],
-        input[type="text"] {
+button{
 
-            width: 90%;
-            padding: 8px;
-            text-align: center;
-            border: 1px solid #cccccc;
-            border-radius: 6px;
-            font-size: 14px;
-        }
+    background:#2e7d32;
+    color:white;
+    border:none;
+    padding:12px 20px;
+    margin:5px;
+    border-radius:6px;
+    cursor:pointer;
+    font-size:15px;
+}
 
-        .button-wrap {
-            display: flex;
-            justify-content: center;
-            gap: 12px;
-            flex-wrap: wrap;
-            margin-top: 20px;
-        }
+button:hover{
 
-        button {
+    background:#1b5e20;
+}
 
-            padding: 12px 18px;
-            background-color: #2e7d32;
-            color: white;
-            border: none;
-            border-radius: 6px;
-            font-size: 15px;
-            font-weight: bold;
-            cursor: pointer;
-        }
+.chart-wrap{
 
-        button:hover {
-            background-color: #1b5e20;
-        }
+    display:flex;
+    flex-wrap:wrap;
+    gap:20px;
+}
 
-        @media (max-width: 768px) {
+.chart-box{
 
-            .chart-section {
-                flex-direction: column;
-            }
-        }
+    flex:1;
+    min-width:350px;
+    background:white;
+    padding:20px;
+    border-radius:10px;
+    box-shadow:0 4px 6px rgba(0,0,0,0.1);
+}
 
-    </style>
+</style>
 
 </head>
 
 <body>
 
-    <h1>🌱 식물의 광합성 반응 측정 실험</h1>
-    <h2>[시간 경과에 따른 기체 농도 변화 확인하기]</h2>
+<div class="container">
 
-    <div class="container">
+<h1>🌱 식물의 광합성 반응 측정 실험</h1>
+<h2>시간에 따른 산소·이산화탄소 농도 변화</h2>
 
-        <div class="student-box">
+<div class="card">
 
-            <h3>👩‍🔬 학생 정보 입력</h3>
+<h3>학생 정보 입력</h3>
 
-            <table>
-                <tr>
+<table>
 
-                    <th>모둠명</th>
+<tr>
 
-                    <td>
-                        <input type="text"
-                               id="groupName"
-                               placeholder="예: 1모둠">
-                    </td>
+<th>반</th>
 
-                    <th>이름</th>
+<td>
 
-                    <td>
-                        <input type="text"
-                               id="studentName"
-                               placeholder="예: 홍길동">
-                    </td>
+<select id="className">
 
-                </tr>
-            </table>
+<option value="2-1">2학년 1반</option>
+<option value="2-2">2학년 2반</option>
+<option value="2-3">2학년 3반</option>
+<option value="2-4">2학년 4반</option>
 
-        </div>
+</select>
 
-        <div class="table-section">
+</td>
 
-            <h3>📊 1분 단위 실험 데이터 입력</h3>
+<th>모둠</th>
 
-            <table>
+<td>
+<input type="text"
+       id="groupName"
+       placeholder="예 : 1모둠">
+</td>
 
-                <thead>
+<th>이름</th>
 
-                    <tr>
+<td>
+<input type="text"
+       id="studentName"
+       placeholder="예 : 홍길동">
+</td>
 
-                        <th>시간 (분)</th>
+</tr>
 
-                        <th>
-                            산소 농도 (%)<br>
-                            <span style="font-size:11px;">
-                                (0.1%씩 입력)
-                            </span>
-                        </th>
+</table>
 
-                        <th>
-                            이산화탄소 농도 (ppm)<br>
-                            <span style="font-size:11px;">
-                                (1000 이상 입력 가능)
-                            </span>
-                        </th>
+</div>
+<div class="card">
 
-                    </tr>
+<h3>📊 실험 데이터 입력</h3>
 
-                </thead>
+<table>
 
-                <tbody id="input-rows"></tbody>
+<thead>
 
-            </table>
+<tr>
 
-            <div class="button-wrap">
+<th>시간(분)</th>
 
-                <button onclick="drawGraphs()">
-                    📊 그래프 확인하기
-                </button>
+<th>산소 농도 (%)</th>
 
-                <button onclick="downloadGraphs()">
-                    💾 그래프 저장하기
-                </button>
+<th>이산화탄소 농도 (ppm)</th>
 
-                <button onclick="submitData()">
-                    📤 결과 제출하기
-                </button>
+</tr>
 
-            </div>
+</thead>
 
-        </div>
+<tbody id="inputRows">
 
-        <div class="chart-section">
+<tr>
+<td>0분</td>
+<td><input type="number" step="0.01" class="o2-input"></td>
+<td><input type="number" step="1" class="co2-input"></td>
+</tr>
 
-            <div class="chart-container">
-                <canvas id="o2Chart"></canvas>
-            </div>
+<tr>
+<td>1분</td>
+<td><input type="number" step="0.01" class="o2-input"></td>
+<td><input type="number" step="1" class="co2-input"></td>
+</tr>
 
-            <div class="chart-container">
-                <canvas id="co2Chart"></canvas>
-            </div>
+<tr>
+<td>2분</td>
+<td><input type="number" step="0.01" class="o2-input"></td>
+<td><input type="number" step="1" class="co2-input"></td>
+</tr>
 
-        </div>
+<tr>
+<td>3분</td>
+<td><input type="number" step="0.01" class="o2-input"></td>
+<td><input type="number" step="1" class="co2-input"></td>
+</tr>
 
-    </div>
+<tr>
+<td>4분</td>
+<td><input type="number" step="0.01" class="o2-input"></td>
+<td><input type="number" step="1" class="co2-input"></td>
+</tr>
 
+<tr>
+<td>5분</td>
+<td><input type="number" step="0.01" class="o2-input"></td>
+<td><input type="number" step="1" class="co2-input"></td>
+</tr>
+
+</tbody>
+
+</table>
+
+<div class="button-wrap">
+
+<button onclick="drawGraphs()">
+📈 그래프 생성
+</button>
+
+<button onclick="downloadGraphs()">
+💾 그래프 저장
+</button>
+
+<button onclick="submitData()">
+📤 결과 제출
+</button>
+
+</div>
+
+</div>
+
+<div class="chart-wrap">
+
+<div class="chart-box">
+
+<h3>산소(O₂) 변화</h3>
+
+<canvas id="o2Chart"></canvas>
+
+</div>
+
+<div class="chart-box">
+
+<h3>이산화탄소(CO₂) 변화</h3>
+
+<canvas id="co2Chart"></canvas>
+
+</div>
+
+</div>
 <script>
 
 const SCRIPT_URL =
 "https://script.google.com/macros/s/AKfycbw8VCFLh8Ddgj_18Rj7Vw1mws9yo8MigJ3ioURBFWap0M4yWjULtIyzvVp0LlmqhF6m/exec";
 
-const tbody =
-document.getElementById('input-rows');
+let o2Chart = null;
+let co2Chart = null;
 
-const sampleData = [
+function drawGraphs(){
 
-    { o2: 20.90, co2: 1200 },
-    { o2: 21.00, co2: 1050 },
-    { o2: 21.10, co2: 910 },
-    { o2: 21.20, co2: 780 },
-    { o2: 21.30, co2: 640 },
-    { o2: 21.40, co2: 510 }
+    const labels =
+    ['0분','1분','2분','3분','4분','5분'];
 
-];
-
-for (let i = 0; i <= 5; i++) {
-
-    const tr =
-    document.createElement('tr');
-
-    tr.innerHTML = `
-
-        <td><b>${i}분</b></td>
-
-        <td>
-            <input
-                type="number"
-                step="0.01"
-                class="o2-input"
-                placeholder="${sampleData[i].o2}">
-        </td>
-
-        <td>
-            <input
-                type="number"
-                step="1"
-                class="co2-input"
-                placeholder="${sampleData[i].co2}">
-        </td>
-    `;
-
-    tbody.appendChild(tr);
-}
-
-let o2ChartInstance = null;
-let co2ChartInstance = null;
-
-function drawGraphs() {
-
-    const timeLabels = [
-
-        '0분',
-        '1분',
-        '2분',
-        '3분',
-        '4분',
-        '5분'
-    ];
-
-    const o2Values = Array.from(
+    const o2Values =
+    Array.from(
         document.querySelectorAll('.o2-input')
     ).map(el => parseFloat(el.value));
 
-    const co2Values = Array.from(
+    const co2Values =
+    Array.from(
         document.querySelectorAll('.co2-input')
     ).map(el => parseFloat(el.value));
 
-    if (
-        o2Values.includes(NaN) ||
-        co2Values.includes(NaN)
-    ) {
-
-        alert("모든 값을 입력하세요!");
+    if(
+        o2Values.some(isNaN) ||
+        co2Values.some(isNaN)
+    ){
+        alert("모든 값을 입력하세요.");
         return;
     }
 
-    // 산소 그래프
+    const o2Min =
+    Math.min(...o2Values) - 0.02;
 
-    if (o2ChartInstance)
-        o2ChartInstance.destroy();
+    const o2Max =
+    Math.max(...o2Values) + 0.02;
 
-    const ctxO2 =
-    document.getElementById('o2Chart')
-    .getContext('2d');
+    if(o2Chart) o2Chart.destroy();
 
-    o2ChartInstance = new Chart(ctxO2, {
+    o2Chart = new Chart(
+        document.getElementById('o2Chart'),
+        {
+            type:'line',
 
-        type: 'line',
+            data:{
+                labels:labels,
+                datasets:[{
+                    label:'산소 농도 (%)',
+                    data:o2Values,
+                    borderWidth:3,
+                    tension:0.2
+                }]
+            },
 
-        data: {
+            options:{
+                responsive:true,
 
-            labels: timeLabels,
-
-            datasets: [{
-
-                label: '산소 농도 (%)',
-
-                data: o2Values,
-
-                borderColor: '#e74c3c',
-
-                backgroundColor:
-                'rgba(231,76,60,0.1)',
-
-                borderWidth: 4,
-
-                pointRadius: 5,
-
-                tension: 0.2
-            }]
-        },
-
-        options: {
-
-            responsive: true,
-
-            plugins: {
-
-                title: {
-
-                    display: true,
-
-                    text:
-                    '📈 시간에 따른 산소(O₂) 농도 증가'
+                scales:{
+                    y:{
+                        min:o2Min,
+                        max:o2Max
+                    }
                 }
             }
         }
-    });
+    );
 
-    // 이산화탄소 그래프
+    if(co2Chart) co2Chart.destroy();
 
-    if (co2ChartInstance)
-        co2ChartInstance.destroy();
+    co2Chart = new Chart(
+        document.getElementById('co2Chart'),
+        {
+            type:'line',
 
-    const ctxCo2 =
-    document.getElementById('co2Chart')
-    .getContext('2d');
+            data:{
+                labels:labels,
+                datasets:[{
+                    label:'이산화탄소 농도(ppm)',
+                    data:co2Values,
+                    borderWidth:3,
+                    tension:0.2
+                }]
+            },
 
-    co2ChartInstance = new Chart(ctxCo2, {
-
-        type: 'line',
-
-        data: {
-
-            labels: timeLabels,
-
-            datasets: [{
-
-                label:
-                '이산화탄소 농도 (ppm)',
-
-                data: co2Values,
-
-                borderColor: '#2980b9',
-
-                backgroundColor:
-                'rgba(41,128,185,0.1)',
-
-                borderWidth: 4,
-
-                pointRadius: 5,
-
-                tension: 0.2
-            }]
-        },
-
-        options: {
-
-            responsive: true,
-
-            plugins: {
-
-                title: {
-
-                    display: true,
-
-                    text:
-                    '📉 시간에 따른 이산화탄소(CO₂) 농도 감소'
-                }
+            options:{
+                responsive:true
             }
         }
-    });
+    );
 }
 
-function downloadGraphs() {
+function downloadGraphs(){
 
-    const groupName =
-    document.getElementById('groupName').value
-    || '모둠';
-
-    const studentName =
-    document.getElementById('studentName').value
-    || '학생';
-
-    const canvas1 =
-    document.getElementById('o2Chart');
-
-    const canvas2 =
-    document.getElementById('co2Chart');
-
-    const mergedCanvas =
-    document.createElement('canvas');
-
-    const ctx =
-    mergedCanvas.getContext('2d');
-
-    mergedCanvas.width =
-    canvas1.width + canvas2.width + 60;
-
-    mergedCanvas.height =
-    Math.max(
-        canvas1.height,
-        canvas2.height
-    ) + 80;
-
-    ctx.fillStyle = "white";
-
-    ctx.fillRect(
-        0,
-        0,
-        mergedCanvas.width,
-        mergedCanvas.height
+    alert(
+      "그래프는 아이패드에서 화면 캡처로 저장하는 것을 권장합니다."
     );
-
-    ctx.fillStyle = "black";
-
-    ctx.font = "24px Malgun Gothic";
-
-    ctx.fillText(
-        `${groupName} - ${studentName} 광합성 실험 결과`,
-        30,
-        40
-    );
-
-    ctx.drawImage(canvas1, 20, 60);
-
-    ctx.drawImage(
-        canvas2,
-        canvas1.width + 40,
-        60
-    );
-
-    const link =
-    document.createElement('a');
-
-    link.download =
-    `${groupName}_${studentName}_광합성그래프.png`;
-
-    link.href =
-    mergedCanvas.toDataURL('image/png');
-
-    link.click();
 }
 
-async function submitData() {
+async function submitData(){
+
+    const className =
+    document.getElementById(
+        'className'
+    ).value;
 
     const group =
-    document.getElementById('groupName').value;
+    document.getElementById(
+        'groupName'
+    ).value;
 
     const name =
-    document.getElementById('studentName').value;
+    document.getElementById(
+        'studentName'
+    ).value;
 
-    const o2Values = Array.from(
+    const o2Values =
+    Array.from(
         document.querySelectorAll('.o2-input')
     ).map(el => parseFloat(el.value));
 
-    const co2Values = Array.from(
+    const co2Values =
+    Array.from(
         document.querySelectorAll('.co2-input')
     ).map(el => parseFloat(el.value));
 
-    if (!group || !name) {
+    if(
+        !group ||
+        !name
+    ){
+        alert(
+            "반, 모둠, 이름을 입력하세요."
+        );
+        return;
+    }
 
-        alert("모둠명과 이름 입력!");
+    if(
+        o2Values.some(isNaN) ||
+        co2Values.some(isNaN)
+    ){
+        alert(
+            "모든 실험값을 입력하세요."
+        );
         return;
     }
 
     const data = {
 
+        className: className,
+
         group: group,
+
         name: name,
+
         o2: o2Values,
+
         co2: co2Values
     };
 
-    try {
+    try{
 
-        await fetch(SCRIPT_URL, {
+        const response =
+        await fetch(
+            SCRIPT_URL,
+            {
+                method:"POST",
+                body:JSON.stringify(data)
+            }
+        );
 
-            method: "POST",
+        if(response.ok){
 
-            body: JSON.stringify(data)
-        });
+            alert(
+                "제출 완료되었습니다! ✅"
+            );
 
-        alert("제출 완료되었습니다! ✅");
+        }else{
 
-    } catch(error) {
+            alert(
+                "제출 실패 😥"
+            );
+        }
 
-        alert("제출 실패 😥");
+    }catch(error){
 
         console.error(error);
+
+        alert(
+            "제출 실패 😥"
+        );
     }
 }
 
 </script>
+
 </body>
 </html>
